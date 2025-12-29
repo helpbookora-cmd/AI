@@ -7,12 +7,31 @@ export class GeminiService {
   private chatSession: Chat | null = null;
 
   constructor() {
-    // In production, it is safer to use environment variables (process.env.API_KEY || 'FAKE_API_KEY_FOR_DEVELOPMENT').
-    // Your key has been added as a fallback here.
-    const apiKey = process.env.API_KEY || "AIzaSyB9qY66juXL6IXjrWStH3cUafub2ymel5Y";
-    if (!apiKey) {
-      throw new Error("API Key not found in environment.");
+    let apiKey = ""; 
+
+    // 1. Check for Vite environment variable (VITE_API_KEY)
+    // @ts-ignore
+    if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_KEY) {
+      // @ts-ignore
+      apiKey = import.meta.env.VITE_API_KEY;
+    } 
+    // 2. Check for Create React App environment variable (REACT_APP_API_KEY)
+    else if (typeof process !== 'undefined' && process.env?.REACT_APP_API_KEY) {
+      apiKey = process.env.REACT_APP_API_KEY;
     }
+    // 3. Check for standard Node/Webpack environment variable (API_KEY)
+    else if (typeof process !== 'undefined' && process.env?.API_KEY) {
+      apiKey = process.env.API_KEY;
+    }
+    // 4. Fallback (Only use this for local testing, do not commit real keys)
+    else {
+      apiKey = "AIzaSyB9qY66juXL6IXjrWStH3cUafub2ymel5Y"; // Placeholder/Fallback
+    }
+
+    if (!apiKey || apiKey === "AIzaSyB9qY66juXL6IXjrWStH3cUafub2ymel5Y") {
+      console.warn("Warning: API Key is missing or using the default placeholder. Requests will likely fail.");
+    }
+    
     this.ai = new GoogleGenAI({ apiKey });
   }
 
@@ -47,8 +66,6 @@ export class GeminiService {
         });
       }
 
-      // According to guidelines, chat.sendMessageStream accepts the message parameter.
-      // We pass the parts array as the message.
       const result = await this.chatSession!.sendMessageStream({ message: parts });
       
       for await (const chunk of result) {

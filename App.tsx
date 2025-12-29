@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Header } from './components/Header';
 import { ChatInput } from './components/ChatInput';
@@ -150,11 +149,20 @@ ${content}
           }
         }));
       }, image);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      
+      let errorText = preferences.language === 'Urdu' ? "معذرت، ایک غلطی ہوئی ہے۔ اللہ بہتر جانتا ہے۔" : "I am sorry, but an error occurred. Allah knows best.";
+      
+      // Better Error Handling for API Key issues
+      const errString = error.toString().toLowerCase();
+      if (errString.includes('api key') || errString.includes('403') || errString.includes('permission denied')) {
+        errorText = "Configuration Error: API Key is missing or invalid. Please check your Netlify Environment Variables (Add 'REACT_APP_API_KEY' or 'VITE_API_KEY').";
+      }
+
       const errorMessage: Message = {
         role: Role.ASSISTANT,
-        content: preferences.language === 'Urdu' ? "معذرت، ایک غلطی ہوئی ہے۔ اللہ بہتر جانتا ہے۔" : "I am sorry, but an error occurred. Allah knows best.",
+        content: errorText,
         timestamp: Date.now()
       };
       setSessions(prev => prev.map(s => 
