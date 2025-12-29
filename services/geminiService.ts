@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Chat, GenerateContentResponse, Part } from "@google/genai";
 import { SYSTEM_INSTRUCTION } from "../constants";
 import { Message, Role } from "../types";
@@ -8,7 +7,9 @@ export class GeminiService {
   private chatSession: Chat | null = null;
 
   constructor() {
-    const apiKey = process.env.API_KEY || 'FAKE_API_KEY_FOR_DEVELOPMENT';
+    // In production, it is safer to use environment variables (process.env.API_KEY).
+    // Your key has been added as a fallback here.
+    const apiKey = process.env.API_KEY || "AIzaSyB9qY66juXL6IXjrWStH3cUafub2ymel5Y";
     if (!apiKey) {
       throw new Error("API Key not found in environment.");
     }
