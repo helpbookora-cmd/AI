@@ -7,7 +7,7 @@ export class GeminiService {
   private chatSession: Chat | null = null;
 
   constructor() {
-    // In production, it is safer to use environment variables (process.env.API_KEY).
+    // In production, it is safer to use environment variables (process.env.API_KEY || 'FAKE_API_KEY_FOR_DEVELOPMENT').
     // Your key has been added as a fallback here.
     const apiKey = process.env.API_KEY || "AIzaSyB9qY66juXL6IXjrWStH3cUafub2ymel5Y";
     if (!apiKey) {
