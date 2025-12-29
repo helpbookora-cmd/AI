@@ -8,7 +8,7 @@ export class GeminiService {
   private chatSession: Chat | null = null;
 
   constructor() {
-    const apiKey = process.env.API_KEY;
+    const apiKey = process.env.API_KEY || 'FAKE_API_KEY_FOR_DEVELOPMENT';
     if (!apiKey) {
       throw new Error("API Key not found in environment.");
     }
